@@ -4,14 +4,14 @@ require("dotenv").config();
 
 
 const signup = async(req,res) => {
-    const {email,password,name}=req.body
+    const {email,password,name,dob,socialhandle}=req.body
     try{
-        const user=await userModel.findOne({email})
+        const user=await userModel.findOne({email,socialhandle})
         if (user) {
             res.status(404).send("You are a register user")
         } else {
-            await userModel.create({email,password,name})
-            return res.status(200).send("User Created")
+            await userModel.create({email,password,name,dob,socialhandle})
+            return res.status(200).send("User Created successfully")
         }
     }catch(e){
         console.log(e)
@@ -21,25 +21,8 @@ const signup = async(req,res) => {
 
 
 
-const login = async(req,res) => {
-    const {email,password}=req.body
-    try{
-        const user=await userModel.findOne({email})
-        if (user){
-            if (user.password==password) {
-                let token=jwt.sign({email,name:user.name,id:user._id},process.env.PRIVATEKEY)
-                res.status(200).send({message:"Login Successful",token,name:user.name})
-            } else {
-                res.status(404).send("Wrong password")
-            }
-        } else {
-            res.status(404).send("You are not a register user")
-        }
-    }catch(e){
-        return res.status(404).send(e.message)
-    }
-}
 
 
 
-module.exports={signup,login}
+
+module.exports={signup}
